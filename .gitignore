@@ -1,0 +1,6 @@
+.idea
+variables.tfvars
+bin
+*.terraform*
+*terraform.tfstate*
+vendor
