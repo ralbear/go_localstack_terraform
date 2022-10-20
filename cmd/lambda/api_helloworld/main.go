@@ -3,14 +3,18 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/ralbear/go_aws_hello_world/internal/greetings"
 	"log"
 	"net/http"
 	"os"
 	"time"
 )
+
+var currentTime = func() time.Time {
+	return time.Now()
+}
 
 var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
 
@@ -21,17 +25,20 @@ type ResponseBody struct {
 }
 
 func helloWorld(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	now := time.Now()
-
 	name := req.QueryStringParameters["name"]
 
-	message := "Hello world"
+	message, err := greetings.GetMessage(name)
 
-	if name != "" {
-		message = fmt.Sprintf("Hello %s", name)
+	if err != nil {
+		return serverError(err)
 	}
 
-	response := &ResponseBody{Success: true, Message: message, Time: now.String()}
+	response := &ResponseBody{
+		Success: true,
+		Message: message,
+		Time:    currentTime().String(),
+	}
+
 	responseJson, err := json.Marshal(response)
 
 	if err != nil {
@@ -41,6 +48,9 @@ func helloWorld(ctx context.Context, req events.APIGatewayProxyRequest) (events.
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Body:       string(responseJson),
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
 	}, nil
 }
 

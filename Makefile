@@ -1,5 +1,5 @@
 build:
-	CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o ./bin/main ./cmd/lambda/*.go
+	CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o ./bin/main ./cmd/lambda/api_helloworld/*.go
 	zip -r -j ./bin/helloWorld.zip ./bin/main
 	rm ./bin/main
 
