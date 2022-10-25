@@ -1,6 +1,11 @@
 build:
-	CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o ./bin/main ./cmd/lambda/api_helloworld/*.go
-	zip -r -j ./bin/helloWorld.zip ./bin/main
+	ifndef $(function)
+		@echo "function parameter is required"
+		exit 1
+	endif
+
+	CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o ./bin/main "./cmd/$(function)/*.go"
+	zip -r -j "./bin/$(function).zip" ./bin/main
 	rm ./bin/main
 
 terraform-plan:
