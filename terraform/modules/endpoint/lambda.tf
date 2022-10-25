@@ -1,8 +1,8 @@
 resource "aws_lambda_function" "this" {
     function_name    = var.function_name
-    filename         = "../bin/${var.zip_name}"
+    filename         = "../bin/${var.function_name}.zip"
     handler          = "main"
-    source_code_hash = filebase64sha256("../bin/${var.zip_name}")
+    source_code_hash = filebase64sha256("../bin/${var.function_name}.zip")
     role             = aws_iam_role.iam_for_lambda.arn
     runtime          = "go1.x"
     timeout          = 5
