@@ -16,7 +16,14 @@ var currentTime = func() time.Time {
 	return time.Now()
 }
 
-var errorLogger = log.New(os.Stderr, "ERROR ", log.Llongfile)
+var logError = func(errMsg string) {
+	log.New(os.Stderr, "ERROR ", log.Llongfile).Println(errMsg)
+}
+
+var getGreetings = func(name string) (m string, err error) {
+	m, err = greetings.GetMessage(name)
+	return
+}
 
 type ResponseBody struct {
 	Success bool   `json:"success"`
@@ -25,9 +32,7 @@ type ResponseBody struct {
 }
 
 func helloWorld(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	name := req.QueryStringParameters["name"]
-
-	message, err := greetings.GetMessage(name)
+	message, err := getGreetings(req.QueryStringParameters["name"])
 
 	if err != nil {
 		return serverError(err)
@@ -59,7 +64,7 @@ func main() {
 }
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
-	errorLogger.Println(err.Error())
+	logError(err.Error())
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusInternalServerError,

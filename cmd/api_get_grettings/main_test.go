@@ -1,15 +1,15 @@
 package main
 
 import (
-    "context"
-    "encoding/json"
-    "errors"
-    "fmt"
-    "github.com/aws/aws-lambda-go/events"
-    "github.com/stretchr/testify/assert"
-    "github.com/stretchr/testify/require"
-    "testing"
-    "time"
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"testing"
+	"time"
 )
 
 var testingTime = time.Now()
@@ -17,19 +17,25 @@ var testingTime = time.Now()
 func TestHelloWorld(t *testing.T) {
 
 	tests := []struct {
-		testName        string
-		name            string
-		expectedMessage string
-		success         bool
+		testName               string
+		name                   string
+		expectedMessage        string
+		nameToGreetingsService string
+		greetingsFromService   string
+		success                bool
 	}{
 		{
 			"Without name",
+			"",
+			"Hello world",
 			"",
 			"Hello world",
 			true,
 		},
 		{
 			"With name",
+			"Manuel",
+			"Hello Manuel",
 			"Manuel",
 			"Hello Manuel",
 			true,
@@ -49,6 +55,11 @@ func TestHelloWorld(t *testing.T) {
 
 			currentTime = func() time.Time {
 				return testingTime
+			}
+
+			getGreetings = func(name string) (m string, err error) {
+				assert.Equal(t, tc.nameToGreetingsService, name)
+				return tc.greetingsFromService, nil
 			}
 
 			result, err := helloWorld(context.Background(), event)
@@ -71,6 +82,10 @@ func TestHelloWorld(t *testing.T) {
 
 func TestServerError(t *testing.T) {
 	newError := errors.New("some error message")
+
+	logError = func(errMsg string) {
+		assert.Equal(t, newError.Error(), errMsg)
+	}
 
 	se, _ := serverError(newError)
 
