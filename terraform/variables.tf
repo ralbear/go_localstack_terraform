@@ -11,10 +11,15 @@ variable "aws_secret_key" {
 }
 
 variable "functions" {
-  api_gateway = {
-    "api_get_grettings" = {}
-  },
-  sqs = {
+  default = {
+    api_gateway = {
+      "api_get_grettings" = {
+        "method" = "GET",
+        "path" = "/hello"
+      }
+    },
+    sqs = {
 
+    }
   }
 }

@@ -32,5 +32,5 @@ terraform-destroy:
 	terraform -chdir=./terraform destroy -var-file=../variables.tfvars
 
 build-and-deploy:
-	$(MAKE) build
+	$(MAKE) build-all
 	$(MAKE) terraform-apply

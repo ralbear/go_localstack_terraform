@@ -10,7 +10,7 @@ resource "aws_apigatewayv2_stage" "this" {
   auto_deploy = true
 
   access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.this.arn
+    destination_arn = aws_cloudwatch_log_group.api_gw_this.arn
 
     format = jsonencode({
       requestId               = "$context.requestId"
@@ -39,11 +39,11 @@ resource "aws_apigatewayv2_integration" "this" {
 resource "aws_apigatewayv2_route" "this" {
   api_id = aws_apigatewayv2_api.this.id
 
-  route_key = "GET /hello"
+  route_key = "${var.method} ${var.path}"
   target    = "integrations/${aws_apigatewayv2_integration.this.id}"
 }
 
-resource "aws_cloudwatch_log_group" "this" {
+resource "aws_cloudwatch_log_group" "api_gw_this" {
   name = "/aws/api_gw/${aws_apigatewayv2_api.this.name}"
   retention_in_days = 30
 }
