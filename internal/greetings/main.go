@@ -5,10 +5,10 @@ import "fmt"
 const defaultMessage = "Hello world"
 const customMessage = "Hello %s"
 
-func GetMessage(s string) (string, error) {
+func GetMessage(s string) string {
 	if s == "" {
-		return defaultMessage, nil
+		return defaultMessage
 	}
 
-	return fmt.Sprintf(customMessage, s), nil
+	return fmt.Sprintf(customMessage, s)
 }

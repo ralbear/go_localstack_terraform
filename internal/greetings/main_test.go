@@ -26,9 +26,8 @@ func TestGetMessage(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(fmt.Sprintf("Testing: %s", tc.testName), func(t *testing.T) {
-			gt, err := GetMessage(tc.name)
+			gt := GetMessage(tc.name)
 
-			assert.Nil(t, err)
 			assert.Equal(t, tc.expectedMessage, gt)
 		})
 	}

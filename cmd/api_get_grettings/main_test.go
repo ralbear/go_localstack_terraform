@@ -22,6 +22,9 @@ func TestHelloWorld(t *testing.T) {
 		expectedMessage        string
 		nameToGreetingsService string
 		greetingsFromService   string
+		expectedStatusCode     int
+		expectedContentType    string
+		expectedTime           string
 		success                bool
 	}{
 		{
@@ -30,6 +33,9 @@ func TestHelloWorld(t *testing.T) {
 			"Hello world",
 			"",
 			"Hello world",
+			200,
+			"application/json",
+			testingTime.String(),
 			true,
 		},
 		{
@@ -38,6 +44,9 @@ func TestHelloWorld(t *testing.T) {
 			"Hello Manuel",
 			"Manuel",
 			"Hello Manuel",
+			200,
+			"application/json",
+			testingTime.String(),
 			true,
 		},
 	}
@@ -57,9 +66,9 @@ func TestHelloWorld(t *testing.T) {
 				return testingTime
 			}
 
-			getGreetings = func(name string) (m string, err error) {
+			getGreetings = func(name string) string {
 				assert.Equal(t, tc.nameToGreetingsService, name)
-				return tc.greetingsFromService, nil
+				return tc.greetingsFromService
 			}
 
 			result, err := helloWorld(context.Background(), event)
@@ -71,11 +80,11 @@ func TestHelloWorld(t *testing.T) {
 				Time    string `json:"time"`
 			}
 			json.Unmarshal([]byte(result.Body), &responseBody)
-			assert.Equal(t, 200, result.StatusCode)
-			assert.Equal(t, "application/json", result.Headers["Content-Type"])
+			assert.Equal(t, tc.expectedStatusCode, result.StatusCode)
+			assert.Equal(t, tc.expectedContentType, result.Headers["Content-Type"])
 			assert.Equal(t, tc.success, responseBody.Success)
 			assert.Equal(t, tc.expectedMessage, responseBody.Message)
-			assert.Equal(t, testingTime.String(), responseBody.Time)
+			assert.Equal(t, tc.expectedTime, responseBody.Time)
 		})
 	}
 }

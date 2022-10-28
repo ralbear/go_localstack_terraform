@@ -20,9 +20,8 @@ var logError = func(errMsg string) {
 	log.New(os.Stderr, "ERROR ", log.Llongfile).Println(errMsg)
 }
 
-var getGreetings = func(name string) (m string, err error) {
-	m, err = greetings.GetMessage(name)
-	return
+var getGreetings = func(name string) string {
+	return greetings.GetMessage(name)
 }
 
 type ResponseBody struct {
@@ -32,11 +31,7 @@ type ResponseBody struct {
 }
 
 func helloWorld(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	message, err := getGreetings(req.QueryStringParameters["name"])
-
-	if err != nil {
-		return serverError(err)
-	}
+	message := getGreetings(req.QueryStringParameters["name"])
 
 	response := &ResponseBody{
 		Success: true,
