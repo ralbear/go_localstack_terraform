@@ -10,12 +10,18 @@ variable "aws_secret_key" {
   type = string
 }
 
+variable "localstack_url" {
+  description = "Localstack endpoint"
+  default     = "http://localhost:4566"
+}
+
 variable "functions" {
   default = {
     api_gateway = {
       "api_get_grettings" = {
         "method" = "GET",
-        "path" = "/hello"
+        "path" = "hello",
+        "stage" = "dev"
       }
     },
     sqs = {
