@@ -18,14 +18,14 @@ variable "localstack_url" {
 variable "functions" {
   default = {
     api_gateway = {
-      "api_get_grettings" = {
+      "api_get_greetings" = {
         "method" = "GET",
         "path" = "hello",
         "stage" = "dev"
       }
     },
     sqs = {
-
+      "sqs_greetings" = {}
     }
   }
 }

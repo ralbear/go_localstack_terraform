@@ -6,6 +6,12 @@ CYAN     := $(shell tput -Txterm setaf 6)
 YELLOW   := $(shell tput -Txterm setaf 3)
 RESET    := $(shell tput -Txterm sgr0)
 
+docker-start:
+	 docker-compose up -d
+
+docker-stop:
+	docker-compose down
+
 build:
 	@if [ ! "$(function)" ]; then echo "${RED}function parameter is required${RESET}"; exit 1; fi
 	@if [ ! -d "./cmd/$(function)" ]; then echo "${RED}function not found${RESET}"; exit 1; fi
@@ -22,6 +28,9 @@ build-all:
 	@for f in $(shell ls ./cmd/); do $(MAKE) build function=$${f}; done
 	@echo "${GREEN} All functions build ${RESET}"
 
+terraform-init:
+	terraform -chdir=./terraform init
+
 terraform-plan:
 	terraform -chdir=./terraform plan -var-file=../variables.tfvars
 
@@ -30,6 +39,10 @@ terraform-apply:
 
 terraform-destroy:
 	terraform -chdir=./terraform destroy -var-file=../variables.tfvars
+
+setup:
+	$(MAKE) docker-start
+	$(MAKE) terraform-init
 
 build-and-deploy:
 	$(MAKE) build-all
