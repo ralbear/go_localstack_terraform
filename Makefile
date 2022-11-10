@@ -7,7 +7,7 @@ YELLOW   := $(shell tput -Txterm setaf 3)
 RESET    := $(shell tput -Txterm sgr0)
 
 docker-start:
-	 docker-compose up -d
+	docker-compose up -d
 
 docker-stop:
 	docker-compose down
