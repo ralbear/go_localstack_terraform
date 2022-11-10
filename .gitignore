@@ -4,3 +4,4 @@ bin
 *.terraform*
 *terraform.tfstate*
 vendor
+volume
